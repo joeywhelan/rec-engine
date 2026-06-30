@@ -1,0 +1,61 @@
+Create a dark-theme technical section image illustrating the inefficiency of the traditional two-request vector search pattern: a client fetching a stored vector from Elasticsearch, then sending that same vector back in a KNN search request.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: the vector crosses the network twice — once out to the client, once back to the cluster — even though the cluster already holds it.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Client
+   - Left side of the image.
+   - A simple box or laptop/terminal glyph representing the calling application.
+   - Label: "Client"
+   - Neutral white or grey accent — the client is not the problem, just a participant.
+
+2. Elastic Serverless
+   - Right side of the image.
+   - A rounded rectangle. Use the Elastic logomark sparingly and tastefully — a small Elastic logomark in one corner of the box only.
+   - Label: "Elastic Serverless"
+   - Inside: a small cylinder or document glyph labeled "embedding" to represent the stored vector.
+   - Use Elastic gold (#FEC514) as the accent color.
+
+3. Request 1 — vector fetch (top arrow, left to right)
+   - A solid arrow from Client → Elastic Serverless.
+   - Label above arrow: "① GET document"
+   - Label below arrow: "~4 KB returned to client"
+   - Arrow color: muted orange-red to signal cost/waste.
+
+4. Request 2 — KNN search (bottom arrow, right to left direction of payload, but arrow goes left to right to show the search request)
+   - A second solid arrow from Client → Elastic Serverless, below the first.
+   - Label above arrow: "② KNN search"
+   - Label below arrow: "~4 KB vector sent back to cluster"
+   - Arrow color: same muted orange-red.
+
+5. "2 requests" badge
+   - A small pill or badge centered between the two arrows or at the bottom center.
+   - Text: "2 requests · 8 KB on the wire"
+   - Muted red or amber fill — signals inefficiency without being alarmist.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: Elastic gold for the cluster, muted orange-red for the costly round trips, neutral white/grey for the client.
+- Arrows: solid lines, heavier weight than informational arrows to show payload burden.
+- Component boxes: rounded rectangles with a faint border glow matching their accent color.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Two clearly distinct arrows stacked vertically between Client and Elastic Serverless, numbered ① and ②.
+- The repeated vector payload (~4 KB each way) must be legible on or near each arrow.
+- The overall impression should read as "two trips, unnecessary cost" — not neutral.
+- All labels legible at 700px rendered width.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"The traditional pattern requires two sequential network requests. The vector leaves the cluster, lands on the client, then gets sent all the way back — 8 KB of unnecessary wire traffic."

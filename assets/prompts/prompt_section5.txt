@@ -1,0 +1,60 @@
+Create a dark-theme technical section image illustrating a three-layer nested retriever pipeline in a single Elasticsearch API call: KNN lookup at the base, Jina Reranker v3 wrapping it, and a Painless sponsorship boost wrapping the reranker.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: three retrieval layers compose into one API call — lookup feeds the reranker, the reranker feeds the booster.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Outer wrapper: "Single API call"
+   - A large rounded rectangle spanning most of the image width.
+   - Faint border only — this is a container, not a prominent component.
+   - Label at top-left corner: "Single API call"
+   - Monospaced, small, muted white.
+
+2. Three nested layers inside the outer wrapper, arranged left to right or as concentric shells:
+   a. Innermost — KNN retriever (left / innermost shell)
+      - Label: "KNN retriever"
+      - Sub-label: "query_vector_builder.lookup"
+      - Accent color: Elastic gold (#FEC514).
+      - Small vector/embedding glyph inside.
+   b. Middle — text_similarity_reranker
+      - Label: "text_similarity_reranker"
+      - Sub-label: "Jina Reranker v3 · cross-encoder"
+      - Accent color: faint teal or cyan.
+      - Wraps the KNN box visually.
+   c. Outermost — rescorer (Painless boost)
+      - Label: "rescorer"
+      - Sub-label: "Painless script · +0.15 for sponsored"
+      - Accent color: soft amber or warm yellow, distinct from Elastic gold.
+      - Wraps the reranker box visually.
+
+3. Flow direction indicators
+   - Small arrows or chevrons showing data flows inward at query time and outward as ranked results:
+     Client → rescorer → reranker → KNN (query fan-in)
+     KNN → reranker → rescorer → Client (result fan-out)
+   - Keep these subtle — the nesting structure is the main visual, not the arrows.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: Elastic gold for the KNN innermost layer, faint teal for the reranker, soft amber for the rescorer/boost layer.
+- Each nested layer should have a distinct faint border glow in its accent color — like concentric halos.
+- The nesting must be immediately readable: rescorer contains reranker contains KNN.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- The nested shell structure must be the dominant visual — not a list, not a flowchart.
+- Each layer's label and sub-label must be clearly readable within its shell.
+- The three accent colors (gold, teal, amber) must be visually distinct at a glance.
+- All labels legible at 700px rendered width.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"Three retrieval layers — KNN lookup, Jina reranking, and a Painless sponsorship boost — are nested inside a single Elasticsearch API call. Each layer wraps the one inside it."

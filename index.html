@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Better Recommendations, Half the Requests — Elastic</title>
+<style>
+  :root{
+    --bg:#0b0e14;
+    --bg2:#121722;
+    --panel:#161c28;
+    --border:#283142;
+    --text:#e8edf5;
+    --muted:#9aa7bd;
+    --teal:#00BFB3;
+    --blue:#1BA9F5;
+    --gold:#FEC514;
+    --pink:#F04E98;
+    --coral:#FA744E;
+    --red:#FF6D6D;
+    --green:#54B399;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* progress bar (top, thin — out of content's way) */
+  #progress{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:linear-gradient(90deg,var(--teal),var(--blue),var(--gold),var(--pink));
+    z-index:50;transition:width .3s ease;
+  }
+
+  /* slide deck */
+  .deck{position:relative;width:100vw;height:100vh}
+  .slide{
+    position:absolute;inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    /* generous padding so nothing collides with controls */
+    padding:7vh 8vw 9vh;
+    opacity:0;
+    transition:opacity .45s ease;
+    background:radial-gradient(1200px 600px at 50% -10%,rgba(0,191,179,.07),transparent 60%),var(--bg);
+  }
+  .slide.active{display:flex;opacity:1;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* dotgrid texture */
+  .slide::before{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+  .slide > *{position:relative;z-index:1}
+
+  h1{font-size:clamp(28px,4.4vw,60px);line-height:1.08;font-weight:800;letter-spacing:-.5px}
+  h2{font-size:clamp(24px,3.2vw,46px);line-height:1.12;font-weight:800;letter-spacing:-.3px;margin-bottom:.5em}
+  h3{font-size:clamp(16px,1.7vw,22px);font-weight:600;color:var(--muted)}
+  p{font-size:clamp(15px,1.5vw,21px);line-height:1.5;color:var(--text)}
+  .lead{color:var(--muted);max-width:60ch}
+
+  .accent{color:var(--teal)}
+  .gold{color:var(--gold)}
+  .pink{color:var(--pink)}
+  code,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+
+  .kicker{
+    display:inline-block;font-size:clamp(11px,1vw,14px);font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--teal);
+    border:1px solid rgba(0,191,179,.35);background:rgba(0,191,179,.08);
+    padding:6px 14px;border-radius:999px;margin-bottom:22px;
+  }
+
+  /* media */
+  .media{max-width:min(78vw,1040px);max-height:52vh;width:auto;height:auto;
+    border-radius:14px;border:1px solid var(--border);
+    box-shadow:0 24px 60px rgba(0,0,0,.5);object-fit:contain;margin-top:6px}
+  .caption{margin-top:18px;color:var(--muted);font-size:clamp(13px,1.3vw,18px);max-width:64ch}
+
+  /* layout helpers */
+  .stack{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:1100px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:1100px;width:100%;align-items:stretch}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1150px;width:100%}
+
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:26px 24px;text-align:left;
+  }
+  .card .num{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--teal)}
+  .card h4{font-size:clamp(17px,1.7vw,23px);font-weight:700;margin:8px 0 8px}
+  .card p{font-size:clamp(13px,1.25vw,17px);color:var(--muted);line-height:1.45}
+  .card.before{border-top:3px solid var(--coral)}
+  .card.after{border-top:3px solid var(--teal)}
+  .card.full{border-top:3px solid var(--gold)}
+
+  ul.points{list-style:none;text-align:left;max-width:60ch;margin-top:10px}
+  ul.points li{font-size:clamp(15px,1.55vw,21px);line-height:1.5;padding:9px 0 9px 34px;position:relative;color:var(--text)}
+  ul.points li::before{content:"";position:absolute;left:0;top:.7em;width:11px;height:11px;border-radius:3px;
+    background:linear-gradient(135deg,var(--teal),var(--blue))}
+
+  .codeblock{
+    background:#0d1320;border:1px solid var(--border);border-radius:12px;
+    text-align:left;padding:20px 22px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+    font-size:clamp(12px,1.15vw,16px);line-height:1.55;color:#cdd6e4;overflow:auto;max-height:46vh;width:100%}
+  .codeblock .k{color:var(--pink)}
+  .codeblock .s{color:var(--gold)}
+  .codeblock .c{color:#5b6776}
+  .codeblock .f{color:var(--teal)}
+  .codelabel{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:800;
+    letter-spacing:.08em;padding:6px 12px;border-radius:8px 8px 0 0;display:inline-block;text-align:left}
+  .codelabel.bad{background:rgba(250,116,78,.16);color:var(--coral);border:1px solid rgba(250,116,78,.4);border-bottom:none}
+  .codelabel.good{background:rgba(0,191,179,.16);color:var(--teal);border:1px solid rgba(0,191,179,.4);border-bottom:none}
+  .codelabel + .codeblock{border-top-left-radius:0}
+
+  .statrow{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+  .stat{min-width:200px}
+  .stat .big{font-size:clamp(40px,6vw,84px);font-weight:800;line-height:1;
+    background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .big.warn{background:linear-gradient(135deg,var(--coral),var(--pink));-webkit-background-clip:text}
+  .stat .lbl{margin-top:10px;color:var(--muted);font-size:clamp(13px,1.3vw,18px)}
+
+  .pill{display:inline-block;padding:5px 13px;border-radius:999px;font-size:13px;font-weight:700;margin-top:14px}
+  .pill.bad{background:rgba(250,116,78,.14);color:var(--coral);border:1px solid rgba(250,116,78,.4)}
+  .pill.good{background:rgba(0,191,179,.14);color:var(--teal);border:1px solid rgba(0,191,179,.4)}
+
+  /* Elastic mark */
+  .elastic-mark{display:inline-flex;align-items:center;gap:12px}
+  .elastic-mark svg{width:38px;height:38px}
+  .elastic-mark .word{font-weight:800;font-size:22px;letter-spacing:-.3px}
+
+  .titlewrap{display:flex;flex-direction:column;align-items:center;gap:26px}
+  .footer-meta{margin-top:30px;color:var(--muted);font-size:clamp(13px,1.3vw,17px)}
+  .divider{width:64px;height:4px;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--gold));margin:6px auto 0}
+
+  /* controls — corners + bottom center, away from centered content */
+  .ctrl{
+    position:fixed;bottom:22px;z-index:40;
+    width:46px;height:46px;border-radius:50%;
+    background:rgba(22,28,40,.85);border:1px solid var(--border);
+    color:var(--text);font-size:20px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);transition:all .2s;
+  }
+  .ctrl:hover{background:var(--teal);color:#08121a;border-color:var(--teal)}
+  #prev{right:80px}
+  #next{right:24px}
+  #counter{
+    position:fixed;bottom:30px;left:28px;z-index:40;
+    color:var(--muted);font-size:14px;font-weight:600;letter-spacing:.05em;
+    font-family:ui-monospace,Menlo,monospace;
+  }
+  .brand-corner{
+    position:fixed;top:18px;right:24px;z-index:40;opacity:.9;
+    display:flex;align-items:center;gap:9px;
+  }
+  .brand-corner svg{width:26px;height:26px}
+  .brand-corner span{font-size:13px;font-weight:700;color:var(--muted)}
+
+  @media (max-width:780px){
+    .two,.three{grid-template-columns:1fr}
+    .media{max-height:40vh}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="brand-corner">
+  <svg viewBox="0 0 32 32" aria-label="Elastic"><defs></defs>
+    <circle cx="9" cy="9" r="6" fill="#FEC514"/>
+    <circle cx="23" cy="9" r="6" fill="#00BFB3"/>
+    <circle cx="9" cy="23" r="6" fill="#F04E98"/>
+    <circle cx="23" cy="23" r="6" fill="#1BA9F5"/>
+  </svg>
+  <span>elastic</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 — TITLE -->
+  <section class="slide active">
+    <div class="titlewrap">
+      <div class="elastic-mark">
+        <svg viewBox="0 0 32 32">
+          <circle cx="9" cy="9" r="6" fill="#FEC514"/>
+          <circle cx="23" cy="9" r="6" fill="#00BFB3"/>
+          <circle cx="9" cy="23" r="6" fill="#F04E98"/>
+          <circle cx="23" cy="23" r="6" fill="#1BA9F5"/>
+        </svg>
+        <span class="word">elastic</span>
+      </div>
+      <h1>Better Recommendations,<br><span class="accent">Half the Requests</span></h1>
+      <h3 style="max-width:64ch"><code>query_vector_builder.lookup</code> collapses KNN search, reranking, and business logic into a single Elasticsearch API call.</h3>
+      <div class="divider"></div>
+      <p class="footer-meta">A production recommendation engine on Elasticsearch&nbsp;Serverless&nbsp;9.4 &nbsp;·&nbsp; Solutions Engineering Demo</p>
+    </div>
+  </section>
+
+  <!-- 2 — WHY IT MATTERS (management framing) -->
+  <section class="slide">
+    <span class="kicker">The Business Case</span>
+    <h2>Recommendations drive revenue —<br>but latency and complexity tax every call</h2>
+    <ul class="points">
+      <li>"Customers who viewed this also bought…" is core to <span class="accent">cart size and conversion</span>.</li>
+      <li>Stored-vector recommendations traditionally need <span class="pink">two round trips</span> per request — fetch the vector, then search with it.</li>
+      <li>At scale, that doubles network payload and latency for a result the cluster <em>already holds</em>.</li>
+      <li>Relevance also needs <span class="gold">business signals</span> — sponsorship, stock, co-purchase — without bolting on a second system.</li>
+    </ul>
+  </section>
+
+  <!-- 3 — WHAT WE'LL SHOW -->
+  <section class="slide">
+    <span class="kicker">Today's Demo</span>
+    <h2>Three approaches to the same query<br><span class="lead" style="font-weight:400;font-size:.6em">"find products similar to this one" — on 1,000 real Amazon products</span></h2>
+    <div class="three" style="margin-top:18px">
+      <div class="card before"><div class="num">BEFORE</div><h4>Two round trips</h4><p>The traditional stored-vector pattern. Vector crosses the network twice.</p></div>
+      <div class="card after"><div class="num">AFTER</div><h4>Single request</h4><p><code>lookup</code> resolves the vector server-side. Identical results, zero vector payload.</p></div>
+      <div class="card full"><div class="num">FULL PIPELINE</div><h4>+ Rerank + Boost</h4><p>Jina Reranker v3 and a sponsorship boost — all in one call.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 — ARCHITECTURE -->
+  <section class="slide">
+    <span class="kicker">Architecture</span>
+    <h2>One platform, end to end</h2>
+    <img class="media" src="assets/images/arch.png" alt="High-level architecture">
+    <p class="caption">Provisioned with Terraform · embeddings &amp; reranking via Elastic Inference Service · serving over a single Serverless endpoint.</p>
+  </section>
+
+  <!-- 5 — DATA / INGEST -->
+  <section class="slide">
+    <span class="kicker">Data Ingestion</span>
+    <h2>From raw products to searchable vectors</h2>
+    <img class="media" src="assets/images/section2.png" alt="Ingestion pipeline">
+    <p class="caption">Synthesize behavioral signals → build <code>product_text</code> → embed with Jina v5 via EIS → bulk index. Co-purchase affinity is baked <em>into</em> the embedding, not bolted on after.</p>
+  </section>
+
+  <!-- 6 — THE BEFORE -->
+  <section class="slide">
+    <span class="kicker">The Before</span>
+    <h2>Two round trips — the vector pays the toll twice</h2>
+    <img class="media" src="assets/images/section3.png" alt="Two request pattern" style="max-height:42vh">
+    <div class="statrow" style="margin-top:18px">
+      <div class="stat"><div class="big warn">2</div><div class="lbl">network requests</div></div>
+      <div class="stat"><div class="big warn">~8&nbsp;KB</div><div class="lbl">vector on the wire</div></div>
+    </div>
+    <span class="pill bad">GET embedding → send it right back in the KNN body</span>
+  </section>
+
+  <!-- 7 — THE AFTER -->
+  <section class="slide">
+    <span class="kicker">The After · ES 9.4</span>
+    <h2><code>query_vector_builder.lookup</code></h2>
+    <img class="media" src="assets/images/section4.png" alt="Single request lookup" style="max-height:40vh">
+    <div class="statrow" style="margin-top:16px">
+      <div class="stat"><div class="big">1</div><div class="lbl">network request</div></div>
+      <div class="stat"><div class="big">0&nbsp;KB</div><div class="lbl">vector payload</div></div>
+    </div>
+    <span class="pill good">Client sends only a document ID — the cluster resolves its own vector</span>
+  </section>
+
+  <!-- 8 — CODE: drop-in -->
+  <section class="slide">
+    <span class="kicker">Drop-in Replacement</span>
+    <h2>Two requests become one — same KNN, same results</h2>
+    <div class="two" style="align-items:start">
+      <div>
+        <div class="codelabel bad">BEFORE · 2 requests</div>
+        <div class="codeblock mono">
+<span class="c"># 1. fetch the stored vector</span>
+doc = es.<span class="f">get</span>(index=INDEX, id=sku,
+  _source_includes=[<span class="s">"embedding"</span>])
+vec = doc[<span class="s">"_source"</span>][<span class="s">"embedding"</span>]
+
+<span class="c"># 2. send it back in the search</span>
+es.<span class="f">search</span>(index=INDEX, body={
+  <span class="k">"knn"</span>: {
+    <span class="k">"field"</span>: <span class="s">"embedding"</span>,
+    <span class="k">"query_vector"</span>: vec   <span class="c"># ~4KB</span>
+  }
+})</div>
+      </div>
+      <div>
+        <div class="codelabel good">AFTER · 1 request</div>
+        <div class="codeblock mono">
+<span class="c"># cluster resolves its own vector</span>
+es.<span class="f">search</span>(index=INDEX, body={
+  <span class="k">"knn"</span>: {
+    <span class="k">"field"</span>: <span class="s">"embedding"</span>,
+    <span class="k">"query_vector_builder"</span>: {
+      <span class="k">"lookup"</span>: {
+        <span class="k">"index"</span>: INDEX,
+        <span class="k">"id"</span>:    sku,
+        <span class="k">"path"</span>:  <span class="s">"embedding"</span>
+      }
+    }
+  }
+})</div>
+      </div>
+    </div>
+    <p class="caption">No <code>get</code>, no client-side vector. Results are <span class="accent">byte-for-byte identical</span> — provably a drop-in, not a different algorithm.</p>
+  </section>
+
+  <!-- 9 — FULL PIPELINE -->
+  <section class="slide">
+    <span class="kicker">Full Pipeline</span>
+    <h2>Lookup + Rerank + Sponsorship boost — one call</h2>
+    <img class="media" src="assets/images/section5.png" alt="Nested retriever pipeline">
+    <p class="caption">A <code>rescorer</code> wraps a <code>text_similarity_reranker</code> wraps the <code>knn</code> lookup. Each layer composes transparently — no orchestration code, no extra hops.</p>
+  </section>
+
+  <!-- 10 — BUSINESS LOGIC -->
+  <section class="slide">
+    <span class="kicker">Business Logic in the Query</span>
+    <h2>Relevance first, then a measured nudge</h2>
+    <div class="two">
+      <div class="card after"><div class="num">RELEVANCE</div><h4>Jina Reranker v3</h4><p>A cross-encoder re-scores candidates by full-text similarity — surfacing what's semantically closest, not just nearest in vector space.</p></div>
+      <div class="card full"><div class="num">+0.15 BOOST</div><h4>Painless sponsorship</h4><p>A fixed delta lifts sponsored items that already survived KNN + rerank. Monetization without sacrificing relevance.</p></div>
+    </div>
+    <p class="caption">Two sponsored products rose from #6 and #8 to <span class="gold">#2 and #3</span> — while everything relevant stayed relevant.</p>
+  </section>
+
+  <!-- 11 — RESULTS COMPARISON -->
+  <section class="slide">
+    <span class="kicker">Side by Side</span>
+    <h2>Same source product, three result sets</h2>
+    <img class="media" src="assets/images/section7.png" alt="Three-way comparison">
+    <p class="caption"><span class="accent">✓</span> lookup matches the baseline exactly &nbsp;·&nbsp; <span class="gold">★</span> sponsored items promoted by the boost in the full pipeline.</p>
+  </section>
+
+  <!-- 12 — WHY IT MATTERS -->
+  <section class="slide">
+    <span class="kicker">Why It Matters</span>
+    <h2>Less code, less wire, more control</h2>
+    <ul class="points">
+      <li><span class="accent">Half the requests</span> — lower latency and bandwidth on every recommendation, at any scale.</li>
+      <li><span class="accent">Simpler clients</span> — no vector marshalling; the cluster owns the vector lifecycle.</li>
+      <li><span class="accent">Business logic stays in the query</span> — rerank and boost compose in one call, no second system to operate.</li>
+      <li><span class="accent">Fully managed</span> — Serverless scales the work; your team ships features.</li>
+    </ul>
+  </section>
+
+  <!-- 14 — CLOSE -->
+  <section class="slide">
+    <div class="titlewrap">
+      <div class="elastic-mark">
+        <svg viewBox="0 0 32 32">
+          <circle cx="9" cy="9" r="6" fill="#FEC514"/>
+          <circle cx="23" cy="9" r="6" fill="#00BFB3"/>
+          <circle cx="9" cy="23" r="6" fill="#F04E98"/>
+          <circle cx="23" cy="23" r="6" fill="#1BA9F5"/>
+        </svg>
+        <span class="word">elastic</span>
+      </div>
+      <h1>Let's build it on <span class="accent">your</span> data</h1>
+      <p class="lead">The full notebook, Terraform, and source are ready to run against a Serverless project today.</p>
+      <div class="divider"></div>
+      <p class="footer-meta mono">github.com/joeywhelan/rec-engine &nbsp;·&nbsp; Thank you</p>
+    </div>
+  </section>
+
+</div>
+
+<div id="counter">01 / 14</div>
+<button class="ctrl" id="prev" aria-label="Previous slide">&#8249;</button>
+<button class="ctrl" id="next" aria-label="Next slide">&#8250;</button>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const progress=document.getElementById('progress');
+  const counter=document.getElementById('counter');
+  let i=0;
+  const pad=n=>String(n).padStart(2,'0');
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    progress.style.width=((i)/(slides.length-1)*100)+'%';
+    counter.textContent=pad(i+1)+' / '+pad(slides.length);
+  }
+  function next(){show(i+1)}
+  function prev(){show(i-1)}
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(slides.length-1)}
+  });
+  // touch / swipe
+  let x0=null;
+  addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50){dx<0?next():prev()}x0=null;});
+  show(0);
+</script>
+</body>
+</html>

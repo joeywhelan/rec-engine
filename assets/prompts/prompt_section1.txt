@@ -1,0 +1,65 @@
+Create a dark-theme technical section image illustrating Terraform provisioning of an Elastic Serverless project and writing credentials to a local environment file.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: Terraform building an Elastic Serverless project and writing credentials to a local .env file.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Terraform
+   - Left side of the image.
+   - A clean Terraform logomark or abstract infrastructure glyph (interlocking hexagons or provisioning icon).
+   - Label: "Terraform"
+   - Sub-label: "IaC provisioning"
+   - Use Terraform purple (#7B42BC) as the accent color.
+
+2. Directed arrow: "terraform apply"
+   - A solid horizontal arrow from the Terraform node toward the Elastic Serverless boundary.
+   - Label the arrow: "terraform apply"
+   - Monospaced label styling, light color.
+
+3. Elastic Serverless boundary box
+   - Center-right of the image.
+   - A rounded rectangle representing a managed serverless service — no individual nodes, since serverless abstracts away the cluster.
+   - Label the boundary: "Elastic Serverless"
+   - Inside: a single abstract "serverless" glyph — a lightning bolt, lambda symbol, or stylized cloud shape — to signal managed infrastructure with no exposed nodes.
+   - Use Elastic gold (#FEC514) as the accent color for the boundary and glyph.
+   - Use the Elastic logomark sparingly and tastefully — a small Elastic logomark in one corner of the boundary box only.
+
+4. Downward arrow: credential output
+   - A dashed arrow flowing downward from the Elastic Serverless boundary box.
+   - Label: "output credentials"
+   - Muted color (grey or faint teal) — visually subordinate.
+
+5. .env file
+   - Bottom-right or below the Elastic Serverless box.
+   - A small file icon or monospaced block showing three faint lines:
+       ELASTIC_CLOUD_API_KEY=...
+       ELASTIC_CLOUD_ID=...
+       HF_TOKEN=...
+   - Label: ".env"
+   - Subtle border, muted styling — implies a local config file, not a cloud service.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: Terraform purple for the left node, Elastic gold for the Serverless boundary, muted grey-green for the .env artifact.
+- Arrows: solid line for the primary provisioning flow, dashed line for the credential output.
+- Component boxes: rounded rectangles with a faint border glow matching their accent color.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Left-to-right flow: Terraform → Elastic Serverless → .env file.
+- The Elastic Serverless box must look like a managed service, not a multi-node cluster — no visible nodes or shards.
+- The .env file must look like a local artifact, not a cloud service.
+- All labels legible at 700px rendered width.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"Terraform provisions an Elastic Serverless project and writes the generated credentials to a local .env file."

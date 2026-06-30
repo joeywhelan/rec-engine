@@ -1,0 +1,57 @@
+Create a dark-theme technical section image illustrating the efficiency of query_vector_builder.lookup: the client sends only a document ID and Elasticsearch resolves the embedding vector internally, completing the KNN search in a single request with zero vector payload on the wire.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: one slim request replaces two heavy ones — the vector never leaves the cluster.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Client
+   - Left side of the image.
+   - A simple box or terminal glyph representing the calling application.
+   - Label: "Client"
+   - Neutral white or grey accent.
+
+2. Elastic Serverless
+   - Right side of the image.
+   - A rounded rectangle. Use the Elastic logomark sparingly and tastefully — a small Elastic logomark in one corner of the box only.
+   - Label: "Elastic Serverless"
+   - Inside: a small self-contained loop or internal arrow showing the cluster resolving the embedding from its own index — the vector stays inside the box.
+   - Sub-label inside the box: "lookup: resolves embedding internally"
+   - Use Elastic gold (#FEC514) as the accent color.
+
+3. Single request arrow (Client → Elastic Serverless)
+   - One solid, clean arrow from Client to Elastic Serverless.
+   - Label above arrow: "KNN search + lookup"
+   - Label below arrow: "payload: document ID only · 0 KB vector"
+   - Arrow color: faint teal or soft green — signals efficiency and correctness.
+
+4. "1 request" badge
+   - A small pill or badge near the arrow or at the bottom center.
+   - Text: "1 request · 0 KB vector payload"
+   - Soft green or teal fill — signals improvement.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: Elastic gold for the cluster, faint teal/green for the efficient single request, neutral white/grey for the client.
+- The internal resolution loop inside the Elastic Serverless box should be subtle — a small curved arrow or dashed loop, not a dominant element.
+- Arrows: solid line for the single outbound request, lighter weight than section 3 to reinforce "less payload."
+- Component boxes: rounded rectangles with a faint border glow matching their accent color.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Only ONE arrow between Client and Elastic Serverless — the contrast with the two-arrow section 3 image is intentional and important.
+- The internal vector resolution must happen visually inside the Elastic Serverless box, not on the wire.
+- The "0 KB vector" label must be clearly readable.
+- All labels legible at 700px rendered width.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"query_vector_builder.lookup collapses two requests into one. The client sends a document ID; the cluster fetches its own embedding and runs the KNN search internally — zero vector payload on the wire."

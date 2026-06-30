@@ -1,0 +1,63 @@
+Create a dark-theme technical section image illustrating a side-by-side comparison of three recommendation approaches for the same source product: the two-request baseline, the lookup-only replacement, and the full pipeline with reranking and sponsorship boost.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: three approaches, same query — the results shift as each layer is added.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Three vertical columns, evenly spaced across the image:
+
+   a. Left column — "Two Requests"
+      - Column header label: "Two Requests"
+      - Sub-label: "raw KNN · 2 calls"
+      - Accent color: muted orange-red (matches the baseline color from the latency section).
+      - Inside: a small vertical ranked list of 4–5 abstract result rows — plain monospaced tick marks or short horizontal bars representing items at ranks 1–5.
+      - No product names needed — abstract placeholders only.
+
+   b. Center column — "lookup only"
+      - Column header label: "lookup only"
+      - Sub-label: "1 call · identical results"
+      - Accent color: faint teal or soft green.
+      - Inside: same ranked list as the left column, with a small ✓ checkmark beside each row to indicate drop-in equivalence.
+      - A "✓ identical" badge or label prominently visible.
+
+   c. Right column — "Full Pipeline"
+      - Column header label: "Full Pipeline"
+      - Sub-label: "lookup + rerank + boost"
+      - Accent color: Elastic gold (#FEC514).
+      - Inside: a ranked list of 5 rows where row 1 is unchanged from the baseline, and rows 2 and 3 are marked with a ★ symbol and visually highlighted as sponsored items promoted by the boost. Rows 4 and 5 are plain/unstyled.
+      - The reordering must be visible — only rows 2 and 3 are starred/promoted; row 1 holds its position from the baseline.
+
+2. Dividers between columns
+   - Faint vertical lines separating the three columns.
+   - Muted grey, subordinate to the column content.
+
+3. Legend
+   - Small, bottom-center or bottom-right of the image.
+   - "✓ = same position" and "★ = sponsored" in small monospaced text.
+   - Muted white, unobtrusive.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: muted orange-red for the baseline, faint teal for the lookup column, Elastic gold for the full pipeline column — consistent with the colors used in earlier section images.
+- Column headers: bold or slightly larger text in the column's accent color.
+- Result rows inside columns: abstract placeholder bars or tick marks — clean and minimal, not actual product text.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Three equal-width columns must be immediately recognizable as a side-by-side comparison.
+- The promoted/sponsored items in the right column must be visually distinct (shifted up, highlighted, or starred) to show reordering.
+- The ✓ marks in the center column must clearly signal "same as left."
+- All labels legible at 700px rendered width.
+- Do not include actual product names, marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"All three approaches run the same query. The lookup result is identical to the baseline. The full pipeline reorders results — sponsored items rise — while everything else holds its position."

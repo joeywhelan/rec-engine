@@ -1,0 +1,58 @@
+Create a dark-theme technical section image illustrating a latency comparison between the two-request baseline and the single-request query_vector_builder.lookup pattern, showing approximately 50% reduction in p50 latency.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: the lookup pattern cuts latency roughly in half compared to the two-request baseline.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Two horizontal bar chart entries, stacked vertically, centered in the image:
+
+   a. "Two requests (before)"
+      - Longer bar, approximately twice the width of the lookup bar.
+      - Bar fill: muted orange-red — the costly baseline.
+      - Label to the left of the bar: "Two requests"
+      - Label inside or to the right of the bar: "p50: 94.4 ms"
+      - Sub-label below bar label: "p95: 106.1 ms"
+
+   b. "lookup (after)"
+      - Shorter bar, approximately half the width of the baseline bar.
+      - Bar fill: faint teal or soft green — the improved pattern.
+      - Label to the left of the bar: "lookup"
+      - Label inside or to the right of the bar: "p50: 47.2 ms"
+      - Sub-label below bar label: "p95: 55.6 ms"
+
+2. "~50% faster" callout
+   - A small annotation or badge positioned to the right of or between the two bars.
+   - Text: "~50% faster"
+   - Soft green fill or faint green text with a subtle border.
+   - Visually draws the eye to the improvement without dominating.
+
+3. X-axis label
+   - Below both bars.
+   - Label: "latency (ms)"
+   - Muted white, small, monospaced.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: muted orange-red for the baseline bar, faint teal/green for the lookup bar.
+- Bars: flat filled rectangles — no gradients, no rounded ends required, though subtle rounding is acceptable.
+- The size difference between the two bars must be immediately obvious.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Two bars only — no additional series, no legend box needed beyond inline labels.
+- The "~50% faster" callout must be clearly associated with the comparison between the two bars.
+- All latency values (p50, p95) must be legible.
+- All labels legible at 700px rendered width.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"The lookup pattern cuts p50 latency from 94.4 ms to 47.2 ms — roughly half — compared to the traditional two-request approach."

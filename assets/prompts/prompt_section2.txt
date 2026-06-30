@@ -1,0 +1,63 @@
+Create a dark-theme technical section image illustrating a four-step data ingestion pipeline: raw product records flowing through signal synthesis, text building, embedding, and indexing into Elasticsearch.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: product data moves through four sequential steps before landing in an Elasticsearch index as dense vectors.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. ESCI Dataset (source)
+   - Far left of the image.
+   - A small database or document stack icon.
+   - Label: "ESCI Dataset"
+   - Sub-label: "1,000 products"
+   - Muted grey-blue accent color — it is the raw source, not a key system.
+
+2. Four pipeline steps — left to right as a horizontal chain of rounded boxes connected by solid arrows:
+   a. "Synthesize signals"
+      - Sub-label: "co-purchase · sponsorship · stock"
+      - Faint teal accent.
+   b. "Build product_text"
+      - Sub-label: "title + brand + features + co-purchase"
+      - Faint teal accent.
+   c. "Embed"
+      - Sub-label: "Jina v5 via EIS"
+      - Faint teal accent.
+   d. "Index"
+      - Sub-label: "bulk load"
+      - Faint teal accent.
+   Each box: small rounded rectangle, subtle border glow in the teal accent.
+
+3. Elasticsearch Serverless (destination)
+   - Far right of the image.
+   - A rounded rectangle. Use the Elastic logomark sparingly and tastefully — a small Elastic logomark in one corner of the box only.
+   - Label: "Elastic Serverless"
+   - Sub-label: "dense_vector stored"
+   - Use Elastic gold (#FEC514) as the accent color.
+
+4. Flow arrows
+   - Solid horizontal arrows connecting: ESCI → Synthesize → Build → Embed → Index → Elastic Serverless.
+   - Light grey arrow color, uniform weight.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode.
+- Accent colors: muted grey-blue for the source dataset, faint teal for the four pipeline steps, Elastic gold for the destination.
+- Arrows: solid lines for the primary data flow.
+- Component boxes: rounded rectangles with a faint border glow matching their accent color.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Strict left-to-right flow: ESCI Dataset → four pipeline boxes → Elastic Serverless.
+- The four pipeline steps must be visually equal in size and weight — no single step should dominate.
+- All labels legible at 700px rendered width.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- Do not show a terminal window, code editor, or browser chrome.
+
+Key message this image must communicate:
+"Raw product records flow through four steps — signal synthesis, text construction, embedding, and indexing — before landing in Elasticsearch as stored dense vectors."
