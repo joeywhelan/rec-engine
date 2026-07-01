@@ -214,7 +214,7 @@ Single API call
 | Reranking | Jina Reranker v3 (EIS) | Cross-attention quality |
 | Boost | Painless `script_score` | Sponsorship |
 
-### Chained Retriever
+### Composed Retriever
 ```python
 results_full = es.search(
     index=INDEX_NAME,
