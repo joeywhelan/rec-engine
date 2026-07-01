@@ -33,7 +33,8 @@ https://joeywhelan.github.io/rec-engine/
 
 ## Installation <a name="installation"></a>
 - Edit the terraform.tfvars.sample and rename to terraform.tfvars
-- Create a Python virtual environment
+- Install dependencies: `uv sync`
 
 ## Usage <a name="usage"></a>
-- Execute notebook
+- Launch the notebook: uv run jupyter notebook demo.ipynb
+- Run cells top-to-bottom (linear execution required)
